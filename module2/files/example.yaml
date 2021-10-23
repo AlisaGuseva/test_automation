@@ -1,0 +1,11 @@
+#Common information
+login: Alisa
+email: alisa.april.one@gmail.ru
+
+#Kafka information
+kafka:
+ caRootLocation: certs//kafka-ca-root.crt
+ certLocation: certs//kafka-client.crt
+ keyLocation: certs//kafka-client.pem
+ bootstrapServers: dev-lin-kafka.com:9093
+ zookeeper: http://dev-lin-zookeeper.com:8085
