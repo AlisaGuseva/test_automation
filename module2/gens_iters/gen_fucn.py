@@ -1,3 +1,5 @@
+list1 = [-2, -1, 0, 1, 2]
+
 
 def gen_func(args):
     for a in args:
@@ -5,12 +7,16 @@ def gen_func(args):
             yield a*2
 
 
-list1 = [-2, -1, 0, 1, 2]
+gen_res = gen_func(list1)
+print(gen_res)
 
-res = gen_func(list1)
-print(res)
+#print(next(gen_res))
+#print(next(gen_res))
+#print(next(gen_res))
+#print(next(gen_res))
 
-print(next(res))
-print(next(res))
-print(next(res))
+for i in gen_res:
+    print(i)
 
+#for i in gen_res:
+#    print(i)
