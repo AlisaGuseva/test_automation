@@ -1,7 +1,7 @@
 import time
 import json
 import csv
-import pytest
+import os
 
 
 def benchmark(func):
@@ -17,62 +17,43 @@ def benchmark(func):
     return wrapper
 
 
-"""
-def test_check_json_format():
-    with open("result.json", "r") as json_file:
-        try:
-            print(json.load(json_file))
-        except json.decoder.JSONDecodeError:
-            pytest.fail("Ошибка чтения json", json.decoder.JSONDecodeError)
-
-"""
-
-
-def read_users_from_json(file_name):
-    with open(file_name, "r") as users_file:
-        return json.load(users_file)
-
-
-def read_books_from_csv(file_name):
-    with open(file_name, "r") as books_file:
-        books_file = csv.reader(books_file)
-        header = [column_name.lower() for column_name in next(books_file)]
-        books_list = []
-        for row in books_file:
-            books_list.append(dict(zip(header, row)))
-        return books_list
-
-
-def write_result_in_json(file_name, values):
-    with open(file_name, "w") as result_file:
-        result_file.write(json.dumps(values, indent=4))
-
-
-class UserLibrary:
-    def __init__(self, name, gender, address, age):
-        self.name = name
-        self.gender = gender
-        self.address = address
-        self.age = age
-        self.books = []
-
-    def add_book(self, book_item):
-        self.books.append(book_item)
-
-
 @benchmark
-def func_ex7():
-    users = read_users_from_json("users.json")
-    users_list = [UserLibrary(user["name"], user["gender"], user["address"], user["age"]) for user in users]
-    users_list_len = len(users_list)
-    books = read_books_from_csv("books.csv")
-    for i in range(len(books)):
-        del(books[i]["publisher"])
-        users_list[i % users_list_len].add_book(books[i])
+def func_ex8():
+    def csv_reader(file_url):
 
-    write_result_in_json("result.json", [user.__dict__ for user in users_list])
+        abs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_url)
+        return csv.DictReader(open(abs_path))
+
+    def json_reader(file_url):
+
+        abs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_url)
+        return json.load(open(file_url))
+
+    user_list = json_reader('users.json')
+    book_list = csv_reader('books.csv')
+
+    users = [{'name': x['name'],
+              'gender': x['gender'],
+              'address': x['address'],
+              'age': x['age'],
+              'books': []}
+             for x in user_list]
+
+    while True:
+        try:
+            for i in users:
+                book = next(book_list)
+                i['books'].append(
+                    {'title': book['Title'],
+                     'author': book['Author'],
+                     'pages': book['Pages'],
+                     'genre': book['Genre']})
+        except StopIteration:
+            break
+
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'result.json'), 'w') as f:
+        f.write(json.dumps(users, indent=4))
 
 
-func_ex7()
-
+func_ex8()
 

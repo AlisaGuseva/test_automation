@@ -16,57 +16,57 @@ def benchmark(func):
 
     return wrapper
 
+
 @benchmark
-def func_ex10():
-    # read users from file into users
-    with open("users.json", "r") as file_users:
-        users = json.load(file_users)
+def func_ex11():
+    import json
+    import csv
 
-    # we need not all fields from initial json, but some specific, so filter them
-    users_with_fields_required = []
-    for user in users:
-        temp_dict = {"name": user.get("name"), "gender": user.get("gender"), "address": user.get("address"),
-                     "age": user.get("age")}
-        users_with_fields_required.append(temp_dict)
+    with open("users.json", 'r') as json_file:
+        json_data = json.loads(json_file.read())
 
-    # read books from file and store it to all_books
-    all_books = []
-    with open("books.csv", "r") as file_books:
-        books = csv.DictReader(file_books)
+    json_list = []
+    for i in json_data:
+        json_list.append({'name': i['name'], 'gender': i['gender'], 'age': i['age'], 'address': i['address']})
 
-        for book in books:
-            all_books.append(book)
+    with open('books.csv', newline='') as csv_file:
+        reader = csv.reader(csv_file)
+        header = next(reader)
+        csv_list = []
+        for row in reader:
+            csv_list.append(dict(zip(header, row)))
 
-    # setting up generator "books_gen"
-    books_gen = (book for book in all_books)
+    result_list = []
+    for json_el in json_list:
+        result_list.append(
+            {
+                "name": json_el['name'],
+                "gender": json_el['gender'],
+                "address": json_el['address'],
+                "age": json_el['age'],
+                "books": []
+            }
+        )
 
-    # list to store books for each user
-    user_books = []
+    readers_count = len(result_list)
+    reader_index = 0
+    for csv_el in csv_list:
+        result_list[reader_index]['books'].append(
+            {
+                "title": csv_el['Title'],
+                "author": csv_el['Author'],
+                "pages": int(csv_el['Pages']),
+                "genre": csv_el['Genre']
+            }
+        )
+        reader_index += 1
+        if reader_index >= readers_count:
+            reader_index = 0
 
-    # main part to allocate all books through the users
-    while True:
-        try:
-            for user in users_with_fields_required:
-                try:
-                    # to check if the user already has any books and if not — add empty "books"
-                    user_books = user["books"]
-                except KeyError:
-                    user["books"] = []
-                # add next book from generator to current user's books
-                user_books.append(next(books_gen))
-                user["books"] = user_books
-                user_books = []
-
-        except StopIteration:
-            break
-
-    # create new json users_with_books_json
-    users_with_books_json = json.dumps(users_with_fields_required, indent=4)
-
-    # write it to file
-    with open("result.json", "w") as file:
-        file.write(users_with_books_json)
+    with open('result.json', 'w') as result_json:
+        result_data = json.dumps(result_list, indent=4)
+        result_json.write(result_data)
 
 
-func_ex10()
+func_ex11()
 
