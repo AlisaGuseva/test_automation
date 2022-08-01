@@ -38,13 +38,13 @@ def get_book_data(book):
 
 def get_equals_books(books: list, people_count: int):
     for item in np.array_split(books, people_count):
-        # print(20*"==")
-        # print(list(item))
-        # print(20 * "==")
+        print(20*"==")
+        print(list(item))
+        print(20 * "==")
         yield list(item)
 
 
-def add_books_to_people(people: dict, equal_books: list):
+def add_books_to_peadd_books_to_peopleople(people: dict, equal_books: list):
     people["books"] = equal_books
     return people
 

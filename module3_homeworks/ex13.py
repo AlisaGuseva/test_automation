@@ -38,6 +38,7 @@ def ex13():
 
             user_num = len(result)
             i = 0
+            print(result)
             for book in books_dr_object:
                 user = result[i % user_num]
                 user["books"].append(

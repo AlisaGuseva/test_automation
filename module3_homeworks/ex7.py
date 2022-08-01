@@ -73,7 +73,7 @@ def func_ex7():
     for i in range(len(books)):
         del(books[i]["publisher"])
         users_list[i % users_list_len].add_book(books[i])
-
+    print(users_list)
     write_result_in_json("result.json", [user.__dict__ for user in users_list])
 
 
