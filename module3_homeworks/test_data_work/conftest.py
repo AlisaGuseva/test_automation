@@ -1,6 +1,7 @@
 import pytest
 import os
-
+import pytest
+from selenium import webdriver
 
 def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome")
@@ -17,11 +18,11 @@ def base_url(request):
 @pytest.fixture
 def driver(request):
     browser_name = request.config.getoption("--browser")
-    drivers = request.config.getoption("--drivers")
+    browser=None
     if browser_name == "chrome":
-        print("chrome")
+        browser = 1
     elif browser_name == "firefox":
-        print("chrome")
+        browser = webdriver.Firefox(executable_path=f"geckodriver")
     else:
         print("Wrong browser")
     return browser
